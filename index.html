@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Mews · Product Builder Take-Home — Arkadii Chugunov</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+  /* ============ Mews brand system ============ */
+  :root{
+    --bg:#000000;--surface:#111114;--text:#FFFFFF;--muted:#C4C9DD;--faint:#6E7180;
+    --pink:#FF83DA;--pink-soft:#FFC5EE;--ink:#000000;
+    --line:rgba(255,255,255,.14);--line-soft:rgba(255,255,255,.08);
+    --ease:cubic-bezier(.4,0,.2,1);--font:"Inter", system-ui, -apple-system, sans-serif;
+    --maxw:80rem;--pad-x:clamp(2rem, 6vw, 7rem);
+    --gap-label:clamp(.9rem, 1.8vh, 1.5rem);--gap-head:clamp(1.5rem, 3.4vh, 2.8rem);--gap-item:clamp(.75rem, 1.5vh, 1.15rem);
+    --fs-eyebrow:clamp(.72rem, .82vw, .92rem);--fs-h1:clamp(2.4rem, 5.6vw, 5.2rem);
+    --fs-h2:clamp(1.7rem, 3.1vw, 2.7rem);--fs-h3:clamp(1.05rem, 1.55vw, 1.4rem);
+    --fs-body:clamp(.92rem, 1.25vw, 1.2rem);--fs-sub:clamp(1.05rem, 1.7vw, 1.5rem);--fs-stat:clamp(4rem, 13vw, 11.5rem);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-snap-type:y mandatory;scroll-behavior:smooth;background:var(--bg);}
+  body{font-family:var(--font);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+
+  .slide{min-height:100vh;scroll-snap-align:start;scroll-snap-stop:always;display:flex;align-items:center;padding-block:clamp(3rem,8vh,6rem);position:relative;}
+  .inner{width:100%;max-width:var(--maxw);margin:0 auto;padding-inline:var(--pad-x);}
+  .inner.split{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(2.5rem,5.5vw,5.5rem);align-items:center;}
+  .inner.split.ai{grid-template-columns:1.12fr .88fr;}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:clamp(2.5rem,5vw,5.5rem);align-items:start;margin-top:var(--gap-head);}
+
+  .eyebrow{font-size:var(--fs-eyebrow);font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:var(--pink);margin-bottom:var(--gap-label);}
+  h1{font-size:var(--fs-h1);font-weight:800;line-height:1.02;letter-spacing:-.012em;text-transform:uppercase;}
+  h2{font-size:var(--fs-h2);font-weight:800;line-height:1.04;letter-spacing:-.005em;text-transform:uppercase;margin-bottom:var(--gap-head);}
+  h3{font-size:var(--fs-h3);font-weight:700;line-height:1.2;}
+  .sub{font-size:var(--fs-sub);font-weight:500;line-height:1.32;color:var(--muted);}
+  strong{color:var(--text);font-weight:700;}
+  .pink{color:var(--pink);}
+
+  ul{list-style:none;display:flex;flex-direction:column;gap:var(--gap-item);}
+  li{position:relative;padding-left:1.6rem;font-size:var(--fs-body);line-height:1.5;color:var(--muted);font-weight:400;}
+  li::before{content:"";position:absolute;left:0;top:.62em;width:.42rem;height:.42rem;border-radius:50%;background:var(--pink);}
+  li.dim::before{background:var(--faint);}
+  li strong{color:var(--text);}
+  .label{font-size:var(--fs-eyebrow);font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:var(--gap-item);}
+  .group + .group{margin-top:clamp(1.4rem,3vh,2.2rem);}
+
+  .stat{font-size:var(--fs-stat);font-weight:900;line-height:.82;letter-spacing:-.03em;color:var(--pink);}
+  .stat.compact{font-size:clamp(3rem,8vw,7rem);}
+  .stat .pct{font-size:.5em;font-weight:800;}
+  .stat-cap{font-size:var(--fs-sub);font-weight:500;line-height:1.3;color:var(--muted);margin-top:clamp(1rem,2vh,1.6rem);}
+  .stat-cap strong{color:var(--text);}
+  .biz-impact{margin-top:clamp(1rem,2.2vh,1.5rem);padding:.1rem 0 .1rem 1rem;border-left:3px solid var(--pink);font-size:var(--fs-body);color:var(--muted);line-height:1.45;}
+  .biz-impact strong{color:var(--pink);font-weight:700;}
+  .goal{background:linear-gradient(160deg,rgba(255,131,218,.13),rgba(255,131,218,.02));border:1px solid rgba(255,131,218,.3);border-radius:1.15rem;padding:clamp(1.4rem,2.2vw,1.9rem) clamp(1.5rem,2.4vw,2rem);}
+  .goal .goal-k{display:block;font-size:var(--fs-eyebrow);font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--pink);margin-bottom:clamp(.55rem,1.3vh,.85rem);}
+  .goal .goal-v{display:block;font-size:clamp(1.25rem,2vw,1.8rem);font-weight:700;color:var(--text);line-height:1.28;}
+  .goal-proof{margin-top:clamp(1rem,2.2vh,1.5rem);background:linear-gradient(180deg,#141417,#0c0c0e);border:1px solid var(--line-soft);border-radius:1.15rem;padding:clamp(1.15rem,1.9vw,1.55rem) clamp(1.25rem,2vw,1.65rem);}
+  .goal-proof .gp-k{display:block;font-size:var(--fs-eyebrow);font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-bottom:.4rem;}
+  .goal-proof .gp-v{font-size:var(--fs-body);color:var(--muted);line-height:1.5;}
+  .goal-proof .gp-v strong{color:var(--pink);font-weight:700;}
+
+  /* lessons (Slide 7 two-column) */
+  .lesson{display:flex;flex-direction:column;gap:clamp(.7rem,1.5vh,1.1rem);}
+  .lesson .num{font-size:var(--fs-eyebrow);font-weight:700;letter-spacing:.2em;color:var(--pink);}
+  .lesson h3{color:var(--text);}
+  .lesson .ltext{font-size:var(--fs-body);color:var(--muted);line-height:1.5;}
+  .lesson .take{font-size:var(--fs-body);color:var(--text);line-height:1.45;padding-top:clamp(.6rem,1.4vh,1rem);border-top:1px solid var(--line-soft);}
+
+  /* media */
+  .media{border:1.4px dashed rgba(255,131,218,.5);border-radius:1.25rem;background:linear-gradient(180deg,#141417,#0c0c0e);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:.65rem;padding:1.5rem;color:var(--faint);}
+  .media .tag{font-size:1.8rem;opacity:.9;}
+  .media .cap{font-size:var(--fs-body);color:var(--muted);max-width:24ch;line-height:1.35;}
+  .media .hint{font-size:.74rem;letter-spacing:.18em;text-transform:uppercase;color:var(--faint);}
+  .media.portrait{aspect-ratio:9/16;max-height:64vh;margin-inline:auto;}
+  .media.landscape{aspect-ratio:16/10;width:100%;}
+
+  .media.video{padding:0;overflow:hidden;position:relative;display:block;border:none;border-radius:1.2rem;}
+  .media.video.portrait{aspect-ratio:auto;height:min(64vh,540px);width:calc(min(64vh,540px) * 1206 / 2622);max-width:100%;margin-inline:auto;}
+  .media.video.landscape{aspect-ratio:16/9;width:100%;height:auto;}
+  .media.video video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;border-radius:inherit;}
+  .vid-ph{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.55rem;text-align:center;padding:1.5rem;color:var(--faint);}
+  .vid-ph .tag{font-size:1.8rem;}.vid-ph .cap{font-size:var(--fs-body);color:var(--muted);max-width:22ch;line-height:1.35;}
+
+  /* real image screenshot */
+  .shot{display:flex;align-items:center;justify-content:center;}
+  .shot img{display:block;max-height:min(66vh,560px);max-width:100%;width:auto;height:auto;border-radius:1.2rem;}
+  .shot-wrap{position:relative;display:inline-block;}
+  .annot{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible;}
+  .annot .circle{fill:none;stroke:var(--pink);stroke-width:15;stroke-linecap:round;stroke-linejoin:round;
+    stroke-dasharray:3600;stroke-dashoffset:3600;transition:stroke-dashoffset 1.1s ease .4s;}
+  .slide.is-in .annot .circle{stroke-dashoffset:0;}
+  @media (prefers-reduced-motion:reduce){.annot .circle{transition:none;stroke-dashoffset:0;}}
+
+  /* charts */
+  .chart{border:1px solid var(--line-soft);border-radius:1.25rem;background:linear-gradient(180deg,#141417,#0c0c0e);padding:clamp(1.1rem,1.8vw,1.8rem);width:100%;}
+  .chart .ct{font-size:var(--fs-eyebrow);letter-spacing:.18em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:.9rem;}
+  .chart svg{width:100%;height:auto;display:block;font-family:var(--font);}
+  .chart .note{font-size:.72rem;color:var(--faint);margin-top:.7rem;}
+  .evalcard{border:1px solid var(--line-soft);border-radius:1.25rem;background:linear-gradient(180deg,#141417,#0c0c0e);padding:clamp(1.4rem,2vw,2rem);}
+  .evalcard .ct{font-size:var(--fs-eyebrow);letter-spacing:.18em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:1.3rem;}
+  .pipeline{display:flex;flex-direction:column;gap:.6rem;}
+  .pipeline .pstep{display:flex;align-items:center;gap:.7rem;}
+  .pipeline .pnum{flex:none;width:1.55rem;height:1.55rem;border-radius:.4rem;background:var(--pink-soft);color:#000;font-weight:700;font-size:.82rem;display:flex;align-items:center;justify-content:center;}
+  .pipeline .plabel{font-weight:600;font-size:var(--fs-body);color:var(--text);}
+  .pipeline .pdesc{color:var(--muted);font-weight:400;font-size:.9em;}
+  .evalcard .enote{margin-top:1.3rem;padding-top:1.1rem;border-top:1px solid var(--line-soft);font-size:.9rem;line-height:1.45;color:var(--muted);}
+  .evalcard .enote b{color:var(--pink);font-weight:600;}
+  .hl-stack{display:flex;flex-direction:column;gap:clamp(.8rem,1.8vh,1.15rem);}
+  .hl-card{background:var(--surface);border:1px solid var(--line);border-radius:1rem;padding:clamp(1rem,1.5vw,1.35rem) clamp(1.1rem,1.7vw,1.5rem);}
+  .hl-card h3{font-size:clamp(1rem,1.25vw,1.2rem);font-weight:700;color:var(--text);margin-bottom:.4rem;letter-spacing:-.01em;}
+  .hl-card p{font-size:clamp(.86rem,1.05vw,1rem);color:var(--muted);line-height:1.45;}
+  .how-flow{font-size:var(--fs-body);color:var(--muted);line-height:1.55;margin-bottom:clamp(1rem,2vh,1.4rem);}
+  .how-next{font-size:var(--fs-body);color:var(--muted);line-height:1.55;}
+
+  /* quote */
+  .quote{border-left:3px solid var(--pink);padding:clamp(1rem,1.6vw,1.5rem) clamp(1.2rem,2vw,1.9rem);background:var(--surface);border-radius:0 1rem 1rem 0;}
+  .quote p{font-size:var(--fs-body);line-height:1.5;color:var(--text);font-weight:600;font-style:italic;}
+  .quote .src{display:block;margin-top:.9rem;font-style:normal;font-size:.78rem;color:var(--faint);letter-spacing:.04em;text-transform:uppercase;}
+
+  /* button */
+  .btn{display:inline-flex;align-items:center;gap:.5em;background:var(--pink-soft);color:var(--ink);text-decoration:none;font-weight:700;font-size:var(--fs-body);padding:.85em 1.6em;border-radius:2em;margin-top:clamp(1.6rem,3.5vh,2.6rem);transition:transform .2s var(--ease),background .2s var(--ease);}
+  .btn:hover{background:#fff;transform:translateY(-2px);}
+
+  /* cover */
+  .cover .inner{display:flex;flex-direction:column;}
+  .cover h1{max-width:16ch;margin-bottom:var(--gap-head);}
+  .cover .sub{max-width:42ch;}
+  .cover .foot{margin-top:clamp(2.5rem,6vh,4.5rem);font-size:var(--fs-body);color:var(--faint);}
+  .cover .foot b{color:var(--text);font-weight:600;}
+  .cover .foot a{text-decoration:none;}
+  .cover .foot a:hover b{color:var(--pink);}
+  .cover h1 .ttl-nowrap{white-space:nowrap;}
+  .cover h1 .title-icon-link{display:inline-block;line-height:0;cursor:pointer;}
+  .cover h1 .title-icon-link:hover .title-icon{box-shadow:0 10px 26px rgba(0,0,0,.55);transform:translateY(-1px);}
+  .cover h1 .title-icon{transition:transform .2s ease, box-shadow .2s ease;display:inline-block;height:0.92em;width:0.92em;border-radius:0.2em;vertical-align:-0.1em;margin:0 0.22em 0 0;box-shadow:0 6px 18px rgba(0,0,0,.4);}
+  .slide.is-in .app-icon{opacity:1;}
+  .scroll-hint{position:absolute;left:50%;bottom:clamp(1.6rem,4vh,2.8rem);transform:translateX(-50%);font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:var(--faint);display:flex;flex-direction:column;align-items:center;gap:.5rem;transition:opacity .4s ease;}
+  .scroll-hint .chev{width:.7rem;height:.7rem;border-right:1.5px solid var(--faint);border-bottom:1.5px solid var(--faint);transform:rotate(45deg);animation:bob 1.8s var(--ease) infinite;}
+  @keyframes bob{0%,100%{transform:rotate(45deg) translate(0,0);opacity:.5}50%{transform:rotate(45deg) translate(2px,2px);opacity:1}}
+
+  /* closing */
+  .closing .inner{display:flex;flex-direction:column;}
+  .closing h1{margin-bottom:var(--gap-head);}
+  .closing .humble{font-size:var(--fs-body);font-weight:500;line-height:1.45;color:var(--muted);max-width:46ch;margin-bottom:clamp(2.2rem,5vh,3.4rem);}
+  .closing .contacts{display:flex;flex-direction:column;gap:var(--gap-item);}
+  .closing .contacts a,.closing .contacts span{color:var(--muted);text-decoration:none;font-size:var(--fs-body);font-weight:500;}
+  .closing .contacts a:hover{color:var(--pink);}
+  .closing .contacts .k{display:inline-block;min-width:7.5em;color:var(--pink);font-weight:600;font-size:var(--fs-eyebrow);letter-spacing:.2em;text-transform:uppercase;}
+
+  .anim{opacity:0;transform:translateY(14px);transition:opacity .6s var(--ease),transform .6s var(--ease);transition-delay:calc(var(--i,0) * 55ms);}
+  .slide.is-in .anim{opacity:1;transform:none;}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto;}.anim{transition:opacity .3s ease;transform:none;transition-delay:0ms;}.scroll-hint .chev{animation:none;}}
+
+  /* ===== Product Builder additions ===== */
+  .storyboard{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:stretch;gap:clamp(.6rem,1.4vw,1.2rem);margin-top:var(--gap-head);}
+  .sb-card{background:var(--surface);border:1px solid var(--line);border-radius:1rem;padding:clamp(1rem,1.6vw,1.4rem);display:flex;flex-direction:column;gap:.55rem;}
+  .sb-card .st{font-size:var(--fs-eyebrow);font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--pink);}
+  .sb-card h3{font-size:clamp(1rem,1.2vw,1.2rem);color:var(--text);line-height:1.2;}
+  .sb-card p{font-size:clamp(.82rem,1vw,.98rem);color:var(--muted);line-height:1.45;}
+  .sb-arrow{display:flex;align-items:center;justify-content:center;color:var(--pink);font-size:1.6rem;font-weight:800;}
+  .sb-card.lead{border-color:rgba(255,131,218,.4);background:linear-gradient(180deg,rgba(255,131,218,.07),var(--surface));}
+  @media(max-width:820px){.storyboard{grid-template-columns:1fr;}.sb-arrow{transform:rotate(90deg);padding:.15rem 0;}}
+
+  .mstack{display:flex;flex-direction:column;gap:.6rem;margin-top:var(--gap-head);}
+  .mtier{display:flex;align-items:baseline;gap:1rem;padding:clamp(.7rem,1.3vw,1rem) clamp(1rem,1.6vw,1.3rem);border-radius:.8rem;border:1px solid var(--line-soft);background:var(--surface);}
+  .mtier .mk{flex:none;width:12.5em;white-space:nowrap;font-size:var(--fs-eyebrow);font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--pink);}
+  .mtier .mv{font-size:var(--fs-body);color:var(--muted);line-height:1.4;}
+  .mtier .mv strong{color:var(--text);}
+  .mtier.hero{border-color:rgba(255,131,218,.4);}
+  .mtier.hero .mv{color:var(--text);}
+  @media(max-width:700px){.mtier{flex-direction:column;gap:.3rem;}.mtier .mk{width:auto;}}
+
+  /* ===== Slide-9 metrics — bullet list (left) + insight card (right) ===== */
+  .metric-list{list-style:none;margin-top:var(--gap-head);display:flex;flex-direction:column;gap:clamp(.85rem,1.9vh,1.3rem);}
+  .metric-list li{position:relative;padding-left:1.3rem;}
+  .metric-list li::before{content:"";position:absolute;left:0;top:.5em;width:.5rem;height:.5rem;border-radius:50%;background:var(--pink);}
+  .metric-list .ml-k{display:block;font-size:var(--fs-eyebrow);font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--pink);margin-bottom:.15rem;}
+  .metric-list .ml-v{font-size:var(--fs-body);color:var(--muted);line-height:1.45;}
+  .metric-list li.hero .ml-v{color:var(--text);}
+  .metric-list .ml-v strong{color:var(--text);}
+  .metric-card{margin-top:clamp(1.8rem,5vh,3.5rem);max-width:32rem;background:linear-gradient(180deg,#16161a,#0b0b0d);border:1px solid var(--line-soft);border-radius:1.15rem;padding:clamp(1.4rem,2.1vw,1.9rem) clamp(1.5rem,2.3vw,2rem);}
+  .metric-card .mc-eyebrow{font-size:var(--fs-eyebrow);font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--pink);margin-bottom:clamp(.5rem,1vh,.75rem);}
+  .metric-card .mc-h{font-size:var(--fs-h3);font-weight:700;color:var(--text);line-height:1.3;margin-bottom:clamp(.85rem,1.7vh,1.15rem);padding-bottom:clamp(.85rem,1.7vh,1.15rem);border-bottom:1px solid var(--line-soft);}
+  .metric-card ul{list-style:none;display:flex;flex-direction:column;gap:clamp(.75rem,1.6vh,1rem);}
+  .metric-card li{position:relative;padding-left:1.1rem;font-size:clamp(.84rem,1vw,.95rem);color:var(--muted);line-height:1.5;}
+  .metric-card li::before{content:"";position:absolute;left:0;top:.62em;width:.36rem;height:.36rem;border-radius:50%;background:var(--pink);}
+  .metric-card strong{color:var(--text);}
+  .mi-lede{font-size:var(--fs-body);color:var(--muted);line-height:1.45;margin-bottom:clamp(.8rem,1.7vh,1.15rem);}
+  .mi-lede strong{color:var(--text);}
+
+  .formula{font-size:var(--fs-body);line-height:1.8;color:var(--muted);}
+  .formula b{color:var(--pink);font-weight:700;}
+  .formula .drv{color:var(--text);font-weight:700;}
+
+  .demo-hero{border:1.4px dashed rgba(255,131,218,.5);border-radius:1.25rem;background:linear-gradient(180deg,#141417,#0c0c0e);min-height:min(52vh,460px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.75rem;text-align:center;padding:2rem;}
+  .demo-hero .tag{font-size:2.4rem;}
+  .demo-hero .dh{font-size:clamp(1.1rem,1.6vw,1.5rem);color:var(--text);font-weight:700;}
+  .demo-hero .dc{font-size:var(--fs-body);color:var(--muted);max-width:38ch;line-height:1.4;}
+  .demo-hero .hint{font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--faint);margin-top:.4rem;}
+
+  /* ===== Slide-6 Opportunity card (faithful light product mock) ===== */
+  .oppshot{display:flex;flex-direction:column;gap:clamp(.85rem,1.7vh,1.25rem);}
+  .oc-sec{display:flex;align-items:center;gap:.55rem;font-size:var(--fs-eyebrow);font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);}
+  .oc-sec .dot{width:.5rem;height:.5rem;border-radius:50%;background:var(--pink);flex:none;}
+  .oc-sec .cnt{background:rgba(255,255,255,.1);color:var(--muted);border-radius:.5rem;padding:.08rem .55rem;font-size:.82em;letter-spacing:.06em;}
+  .oppcard{background:#fff;color:#141422;border-radius:1.15rem;padding:clamp(1.25rem,1.9vw,1.7rem) clamp(1.35rem,2vw,1.85rem);box-shadow:0 26px 64px rgba(0,0,0,.5);}
+  .oppcard .oc-top{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;}
+  .oppcard .oc-name{font-size:clamp(1.15rem,1.5vw,1.45rem);font-weight:800;color:#141422;line-height:1.15;display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;}
+  .oppcard .oc-tag{font-size:.6em;font-weight:700;text-transform:none;letter-spacing:0;color:#b0308f;background:#fbe1f4;padding:.35em .75em;border-radius:2em;white-space:nowrap;}
+  .oppcard .oc-amt{font-size:clamp(1.15rem,1.5vw,1.45rem);font-weight:800;color:#141422;white-space:nowrap;display:flex;align-items:center;gap:.55rem;}
+  .oppcard .ico{display:inline-block;width:.4em;height:.4em;border:solid currentColor;border-width:0 2px 2px 0;}
+  .oppcard .oc-amt .ico.up{color:#a2a2b0;transform:translateY(.16em) rotate(-135deg);}
+  .oppcard .oc-body{font-size:clamp(.95rem,1.18vw,1.12rem);line-height:1.5;color:#3c3c4a;margin-top:1.15rem;}
+  .oppcard .oc-body strong{color:#141422;font-weight:700;}
+  .oppcard .oc-actions{display:flex;gap:.7rem;margin-top:1.35rem;}
+  .oppcard .oc-btn{font-size:clamp(.9rem,1.08vw,1.02rem);font-weight:700;padding:.72em 1.2em;border-radius:.7rem;background:var(--pink);color:#141422;white-space:nowrap;}
+  .oppcard .oc-btn.ghost{background:#fff;color:#3c3c4a;border:1px solid #dcdce4;}
+  .oppcard .oc-foot{display:flex;align-items:center;gap:.55em;margin-top:1.2rem;padding-top:1.05rem;border-top:1px solid #ececf1;font-size:clamp(.86rem,1vw,.98rem);font-weight:600;color:#5a5a68;}
+  .oppcard .oc-foot .ico.dn{color:#8a8a97;transform:translateY(-.12em) rotate(45deg);}
+  .oc-link{align-self:flex-start;display:inline-flex;align-items:center;gap:.4em;font-size:var(--fs-body);font-weight:700;color:var(--ink);background:var(--pink);text-decoration:none;padding:.72em 1.3em;border-radius:.7rem;margin-top:.3rem;transition:background .2s var(--ease),transform .2s var(--ease);}
+  .oc-link:hover{background:#fff;transform:translateY(-1px);}
+  .oc-cap{font-size:.82rem;color:var(--faint);line-height:1.45;}
+
+  /* ===== How it's built (pipeline flow) ===== */
+  .buildflow{display:flex;align-items:stretch;gap:.4rem;flex-wrap:wrap;margin-top:var(--gap-head);}
+  .bf-step{flex:1 1 8rem;background:var(--surface);border:1px solid var(--line);border-radius:.9rem;padding:clamp(.75rem,1.2vw,1.05rem);display:flex;flex-direction:column;gap:.35rem;}
+  .bf-step.ai{border-color:rgba(255,131,218,.45);background:linear-gradient(180deg,rgba(255,131,218,.09),transparent);}
+  .bf-step .bf-k{font-size:var(--fs-eyebrow);font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text);}
+  .bf-step.ai .bf-k{color:var(--pink);}
+  .bf-step .bf-d{font-size:clamp(.72rem,.9vw,.88rem);color:var(--muted);line-height:1.35;}
+  .bf-arrow{display:flex;align-items:center;justify-content:center;color:var(--faint);font-weight:800;font-size:1.05rem;flex:none;}
+  .bf-legend{margin-top:clamp(.8rem,1.8vh,1.2rem);font-size:.82rem;color:var(--muted);letter-spacing:.02em;}
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.86em;color:var(--pink-soft);background:rgba(255,255,255,.06);padding:.08em .4em;border-radius:.35em;}
+  @media(max-width:900px){.bf-step{flex-basis:100%;}.bf-arrow{transform:rotate(90deg);width:100%;}}
+
+  /* ===== How it's built — principles (sparse) ===== */
+  .principles{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(1.6rem,3.6vw,3.6rem);margin-top:clamp(1.8rem,4vh,3rem);}
+  .pr-k{font-size:var(--fs-eyebrow);font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:var(--gap-item);}
+  .pr-d{font-size:var(--fs-body);color:var(--muted);line-height:1.5;}
+  @media(max-width:820px){.principles{grid-template-columns:1fr;gap:1.4rem;}}
+
+  /* ===== Slide number ===== */
+  .pageno{position:fixed;right:clamp(1.5rem,3vw,2.6rem);bottom:clamp(1.3rem,3vh,2.1rem);z-index:20;font-size:.72rem;font-weight:600;letter-spacing:.16em;color:var(--faint);font-variant-numeric:tabular-nums;pointer-events:none;}
+  .pageno b{color:var(--muted);font-weight:700;}
+</style>
+</head>
+<body>
+<main class="deck">
+
+  <!-- 1 · Cover -->
+  <section class="slide cover">
+    <div class="inner">
+      <div class="eyebrow anim" style="--i:0">Product Builder Case Study</div>
+      <h1 class="anim" style="--i:1">Helping hotels turn dormant upsells into revenue</h1>
+      <p class="sub anim" style="--i:2">The PLG activation layer Mews is missing.</p>
+      <p class="foot anim" style="--i:3"><a href="https://www.linkedin.com/in/a-chugunov/" target="_blank" rel="noopener"><b>Arkadii Chugunov</b></a> · July 2026</p>
+    </div>
+    <div class="scroll-hint" id="scrollHint">Scroll<span class="chev"></span></div>
+  </section>
+
+          <!-- Set the stage -->
+  <section class="slide">
+    <div class="inner">
+      <div class="eyebrow anim" style="--i:0">Setting the stage</div>
+      <h2 class="anim" style="--i:1">What this is</h2>
+      <ul style="margin-top:var(--gap-head)">
+        <li class="anim" style="--i:2"><strong>Prototype</strong> — a real web app with a live detector. <a href="https://mews-dark-upsell.onrender.com" target="_blank" rel="noopener" style="color:var(--pink);text-decoration:none;font-weight:600">Open it ↗</a></li>
+        <li class="anim" style="--i:3"><strong>Data</strong> — Mews's public demo Connector API: real products, reservations and orders via public credentials. No live hotel.</li>
+        <li class="anim" style="--i:4"><strong>Real vs mock</strong> — the detector on live data is real; the Mews-style dashboard around it is a mock-up, and conversion rates are estimated benchmarks.</li>
+        <li class="anim" style="--i:5"><strong>Built with</strong> — Claude Code, solo. AI as my eng, design and thinking partner.</li>
+        <li class="anim" style="--i:6"><strong>AI in the product</strong> — drafts the explanations and classifies relevance, guarded by three evals (grounding, claim-check, a gold-set).</li>
+        <li class="anim" style="--i:7"><strong>Sources</strong> — Mews's own data (Data Snap benchmarks, help centre, customer stories); Capterra; industry data (Actabl, BLS, Cloudbeds).</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 2 · The problem -->
+  <section class="slide">
+    <div class="inner split">
+      <div>
+        <div class="eyebrow anim" style="--i:0">The Problem</div>
+        <h2 class="anim" style="--i:1">Hotels pay for upsells they never switch on</h2>
+        <ul>
+          <li class="anim" style="--i:2"><strong>The dark upsell</strong> — a configured "Breakfast — €15" ships switched off at check-in. No error signal. It earns €0.</li>
+          <li class="anim" style="--i:3"><strong>Not a product failure, a surfacing one</strong> — the upsell converts once shown; the hotel just never shows it.</li>
+          <li class="anim" style="--i:4"><strong>And the gap is systemic</strong> — 1 in 3 software buyers ever adopts what they bought (research Mews cites); Mews's own capabilities show the same (right).</li>
+        </ul>
+      </div>
+      <div class="chart anim" style="--i:3">
+        <div class="ct">The same gap runs across Mews</div>
+        <div class="mstack" style="margin-top:.8rem"><div class="mtier"><span class="mk">Kiosk</span><span class="mv"><span class="pink">7%</span> of check-ins</span></div><div class="mtier"><span class="mk">Online check-in</span><span class="mv"><span class="pink">1 in 10</span> OTA guests</span></div><div class="mtier"><span class="mk">Spaces</span><span class="mv"><span class="pink">1 in 4</span> hotels</span></div></div>
+        <div class="note">Mews Data Snap, Summer 2024. Non-upsell capabilities — the systemic proxy; dark-upsell prevalence itself is what I validate (next slide).</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 · Who / why / why now -->
+  <section class="slide">
+    <div class="inner split">
+      <div>
+        <div class="eyebrow anim" style="--i:0">Definition</div>
+        <h2 class="anim" style="--i:1">Who feels it — and why now</h2>
+        <ul>
+          <li class="anim" style="--i:2"><strong>Segment</strong> — independent hotels, where the GM is also the revenue manager. Chains have RMS teams that catch a dark upsell; independents don't.</li>
+          <li class="anim" style="--i:3"><strong>Persona</strong> — the GM / Revenue Manager first (they hold the permission to enable); then front-desk staff — read-only, flagging opportunities up.</li>
+          <li class="anim" style="--i:4"><strong>Why now</strong> — margins are tight, OTAs take most of an independent's bookings, and Cloudbeds already ships an "Opportunities" tab.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="goal anim" style="--i:2">
+          <span class="goal-k">The goal</span>
+          <span class="goal-v">Grow upsell revenue per property — expansion inside the installed base, not new logos.</span>
+        </div>
+        <div class="goal-proof anim" style="--i:3">
+          <span class="gp-k">Evidence</span>
+          <p class="gp-v"><strong>+70%</strong> more upsell revenue per check-in once the kiosk is on, across the ~15,000 hotels already on the platform (Mews's own data).</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 · Discovery + kill-metric -->
+  <section class="slide">
+    <div class="inner split">
+      <div>
+        <div class="eyebrow anim" style="--i:0">Discovery</div>
+        <h2 class="anim" style="--i:1">What I validated — and what I'd validate next</h2>
+        <div class="group">
+          <div class="label anim" style="--i:2">Validated</div>
+          <ul>
+            <li class="anim" style="--i:3">Ships off by default on every surface, no error signal (Mews help centre).</li>
+            <li class="anim" style="--i:4">Backed by Mews's own adoption: kiosk 7% of check-ins · online check-in 1-in-10 OTA guests · Spaces 1-in-4 hotels.</li>
+          </ul>
+        </div>
+        <div class="group">
+          <div class="label anim" style="--i:5">To validate</div>
+          <ul>
+            <li class="anim" style="--i:6">Interviews with smaller-hotel GMs/RMs to confirm the problem.</li>
+            <li class="anim" style="--i:7">Count dark and never-set-up upsells straight from the config — not the playground site.</li>
+            <li class="anim" style="--i:8">Impact projections to size the return.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="evalcard anim" style="--i:3;display:flex;flex-direction:column;justify-content:center">
+        <div class="ct" style="color:var(--pink)">Cheapest test first</div>
+        <p style="font-size:clamp(1.3rem,2vw,1.9rem);color:var(--text);font-weight:700;line-height:1.35">Config data → interviews → build only if the upside <span class="pink">beats other bets</span>.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 · Solution + the ranking engine -->
+  <section class="slide">
+    <div class="inner split">
+      <div>
+        <div class="eyebrow anim" style="--i:0">The Solution</div>
+        <h2 class="anim" style="--i:1">An "Opportunities" section on the Operations Dashboard</h2>
+        <div class="group" style="margin-top:var(--gap-head)">
+          <div class="label anim" style="--i:3">In scope</div>
+          <ul>
+            <li class="anim" style="--i:4"><strong>Two item types</strong> — dark and under-promoted upsells.</li>
+            <li class="anim" style="--i:5"><strong>Grouped by service</strong> — the operator's own catalogue (e.g. Minibar = 5 products), not a flat product list.</li>
+            <li class="anim" style="--i:6">Detect them, price the revenue at stake, and deep-link the GM to switch it on — <strong>human in the loop</strong>.</li>
+          </ul>
+        </div>
+        <div class="group">
+          <div class="label anim" style="--i:7">Out of scope</div>
+          <ul>
+            <li class="dim anim" style="--i:8">Live-earning receipts (fast-follow) · never-set-up upsells (V2) · other Mews capabilities (V3).</li>
+          </ul>
+        </div>
+      </div>
+      <div class="oppshot anim" style="--i:3">
+        <div class="oc-sec"><span class="dot"></span>Opportunities <span class="cnt">12</span></div>
+        <div class="oppcard">
+          <div class="oc-top">
+            <div class="oc-name">Minibar <span class="oc-tag">Under-promoted</span></div>
+            <div class="oc-amt">GBP 3,848 <i class="ico up"></i></div>
+          </div>
+          <p class="oc-body">Minibar earns <strong>~GBP 1,200 / 30 days</strong>, promoted only <strong>at check-out</strong>. Also promote it <strong>before check-in</strong> and <strong>during the stay</strong> to reach <strong>~252 guests</strong>.</p>
+          <div class="oc-actions">
+            <span class="oc-btn">Set up promotion →</span>
+            <span class="oc-btn ghost">Dismiss</span>
+          </div>
+          <div class="oc-foot">Show details <i class="ico dn"></i></div>
+        </div>
+        <p class="oc-cap">Ranked by real arrivals × relevance × likely take-up, priced in the hotel's own numbers — not a generic estimate.</p>
+        <a class="oc-link anim" style="--i:4" href="https://mews-dark-upsell.onrender.com" target="_blank" rel="noopener">Open prototype ↗</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 · How it's built (pipeline + tech + AI evals, merged) -->
+  <section class="slide">
+    <div class="inner">
+      <div class="eyebrow anim" style="--i:0">How It's Built</div>
+      <h2 class="anim" style="--i:1">AI where rules don't scale + a human in the loop</h2>
+      <div class="buildflow">
+        <div class="bf-step anim" style="--i:2"><span class="bf-k">Read</span><span class="bf-d">Connector API — products, reservations, orders</span></div>
+        <span class="bf-arrow anim" style="--i:2">→</span>
+        <div class="bf-step anim" style="--i:3"><span class="bf-k">Detect</span><span class="bf-d">rules — dark &amp; under-promoted</span></div>
+        <span class="bf-arrow anim" style="--i:3">→</span>
+        <div class="bf-step anim" style="--i:4"><span class="bf-k">Rank</span><span class="bf-d">arrivals × relevance × take-up</span></div>
+        <span class="bf-arrow anim" style="--i:4">→</span>
+        <div class="bf-step ai anim" style="--i:5"><span class="bf-k">Classify</span><span class="bf-d">AI — sort real vs review</span></div>
+        <span class="bf-arrow anim" style="--i:5">→</span>
+        <div class="bf-step ai anim" style="--i:6"><span class="bf-k">Explain</span><span class="bf-d">AI — grounded sentence</span></div>
+        <span class="bf-arrow anim" style="--i:6">→</span>
+        <div class="bf-step anim" style="--i:7"><span class="bf-k">Act</span><span class="bf-d">deep-link to settings — <span class="pink">human in the loop</span></span></div>
+      </div>
+      <div class="principles">
+        <div class="anim" style="--i:8">
+          <div class="pr-k">Deterministic core</div>
+          <p class="pr-d">Detection, ranking, and every number are pure rules — <strong>no model on the money path</strong>. The figures are <strong>auditable, never hallucinated</strong>.</p>
+        </div>
+        <div class="anim" style="--i:9">
+          <div class="pr-k">AI does the two jobs rules can't</div>
+          <p class="pr-d">Separating a genuine upsell from a point-of-sale line-item, and writing an explanation a template can't. <strong>AI does only those two</strong>, and states only the numbers the rules computed — <strong>never its own</strong>.</p>
+        </div>
+        <div class="anim" style="--i:10">
+          <div class="pr-k">Every AI output is checked in code</div>
+          <p class="pr-d">Three deterministic checks: <strong>grounding</strong> rejects any number not in the data; <strong>claim-check</strong> catches a false claim about a real one; a <strong>gold-set</strong> fails the build if the classifier buries a real upsell.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8 · Delivery + Vision (merged timeline) -->
+  <section class="slide">
+    <div class="inner">
+      <div class="eyebrow anim" style="--i:0">Roadmap &amp; readiness</div>
+      <h2 class="anim" style="--i:1">One engine — from dark upsells to every dormant capability</h2>
+      <div class="storyboard">
+        <div class="sb-card lead anim" style="--i:2"><div class="st">V1 — today</div><h3>Dark &amp; under-promoted upsells</h3><p>Detect what's switched off, price the loss, deep-link the GM straight to the fix.</p></div>
+        <div class="sb-arrow anim" style="--i:3">→</div>
+        <div class="sb-card anim" style="--i:4"><div class="st">V2</div><h3>Never set up — "set it up"</h3><p>Guided setup, grounded in the property's own demand — not generic best practice.</p></div>
+        <div class="sb-arrow anim" style="--i:5">→</div>
+        <div class="sb-card anim" style="--i:6"><div class="st">V3</div><h3>Other Mews capabilities</h3><p>Beyond upsells — dormant modules they pay for (Kiosk, Spaces, online check-in), ranked against peer hotels.</p></div>
+      </div>
+      <div class="group anim" style="--i:7;margin-top:clamp(1.4rem,3vh,2.2rem)">
+        <div class="label">Production readiness</div>
+        <ul>
+          <li><strong>Handles messy real data</strong> — multiple currencies, price outliers, paginated orders.</li>
+          <li><strong>Runs continuously</strong> — a scheduled batch re-scans every property, catching upsells that go dark over time.</li>
+          <li><strong>Role-aware</strong> — only the GM/Revenue Manager can enable; other staff see it read-only.</li>
+          <li><strong>A layer of online evals</strong> — acceptance and dismiss rates.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11 · Metrics + guardrails -->
+  <section class="slide">
+    <div class="inner split">
+      <div>
+        <div class="eyebrow anim" style="--i:0">Metrics</div>
+        <h2 class="anim" style="--i:1">How I'd measure success</h2>
+        <ul class="metric-list">
+          <li class="anim" style="--i:2"><span class="ml-k">Objective</span><span class="ml-v">More upsell revenue per property — expansion inside the installed base</span></li>
+          <li class="hero anim" style="--i:3"><span class="ml-k">North Star</span><span class="ml-v">% of properties with <strong>revenue-generating</strong> upsells</span></li>
+          <li class="anim" style="--i:4"><span class="ml-k">Leading</span><span class="ml-v">14-day activation rate · nudge acceptance</span></li>
+          <li class="anim" style="--i:5"><span class="ml-k">Feature guardrails</span><span class="ml-v">dismiss rate · reversal rate · double-sell rate</span></li>
+          <li class="anim" style="--i:6"><span class="ml-k">Product health</span><span class="ml-v">support-ticket spike · engagement/adoption · NRR (directional)</span></li>
+        </ul>
+      </div>
+      <div>
+        <div class="metric-card anim" style="--i:3">
+          <div class="mc-eyebrow">The caveat</div>
+          <div class="mc-h">Revenue-generating isn't the same as incremental</div>
+          <ul>
+            <li>Some guests would have bought at the desk anyway — <strong>channel-shift, not created revenue</strong>.</li>
+            <li>The honest read is a <strong>matched holdout</strong>; V1 measures before/after per property and names the gap.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10 · Adoption & iteration -->
+  <section class="slide">
+    <div class="inner split">
+      <div>
+        <div class="eyebrow anim" style="--i:0">Adoption &amp; iteration</div>
+        <h2 class="anim" style="--i:1">Drive adoption, then tune on the data</h2>
+        <div class="group anim" style="--i:2">
+          <div class="label">Drive adoption</div>
+          <ul>
+            <li class="anim" style="--i:3"><strong>Native on the dashboard home</strong> — in view at every login, no new tool to learn.</li>
+            <li class="anim" style="--i:4"><strong>Email digest</strong> — reaches the absent GM who isn't a daily user.</li>
+            <li class="anim" style="--i:5"><strong>Front-desk visibility</strong> — sees opportunities read-only, flags them to the manager who can act.</li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        <div class="label anim" style="--i:2">Improve on data &amp; feedback</div>
+        <p class="mi-lede anim" style="--i:3">Two signals to tune on — and the one outcome that would make us pivot.</p>
+        <ul>
+          <li class="anim" style="--i:4"><strong>Weak leading indicators</strong> (low activation, low acceptance) → re-rank and tighten relevance.</li>
+          <li class="anim" style="--i:5"><strong>Distrust</strong> (high reversal, high mute) → tighten grounding, price more conservatively.</li>
+          <li class="anim" style="--i:6"><strong>Rare in the real base</strong> → re-point the engine at never-set-up upsells &amp; other dormant capabilities.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 14 · Closing -->
+  <section class="slide closing">
+    <div class="inner">
+      <h1 class="anim" style="--i:0">Thank you</h1>
+      <p class="humble anim" style="--i:1">Happy to stay connected, whatever comes next.</p>
+      <div class="contacts">
+        <span class="anim" style="--i:2"><span class="k">Email</span><a href="mailto:arcady.chugunov@gmail.com">arcady.chugunov@gmail.com</a></span>
+        <span class="anim" style="--i:3"><span class="k">LinkedIn</span><a href="https://www.linkedin.com/in/a-chugunov/" target="_blank" rel="noopener">linkedin.com/in/a-chugunov</a></span>
+        <span class="anim" style="--i:4"><span class="k">Based in</span>Barcelona · open to remote</span>
+      </div>
+    </div>
+  </section>
+</main>
+<div class="pageno" aria-hidden="true"><b id="pageno-cur">01</b> / <span id="pageno-tot">11</span></div>
+<script>
+  const allSlides = [...document.querySelectorAll('.slide')];
+  const pageCur = document.getElementById('pageno-cur');
+  const pad2 = n => String(n).padStart(2, '0');
+  const pageTot = document.getElementById('pageno-tot');
+  if (pageTot) pageTot.textContent = pad2(allSlides.length);
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      const inView = e.isIntersecting && e.intersectionRatio >= 0.45;
+      e.target.classList.toggle('is-in', inView);
+      if (inView && pageCur) pageCur.textContent = pad2(allSlides.indexOf(e.target) + 1);
+    });
+  }, { threshold: [0, 0.45, 0.7] });
+  allSlides.forEach(s => io.observe(s));
+
+  const hint = document.getElementById('scrollHint');
+  addEventListener('scroll', () => { if (hint) hint.style.opacity = scrollY > 40 ? '0' : '1'; }, { passive: true });
+
+  document.querySelectorAll('.media.video').forEach(m => {
+    const v = m.querySelector('video'), ph = m.querySelector('.vid-ph');
+    if (!v) return;
+    const hide = () => { if (ph) ph.style.display = 'none'; };
+    v.addEventListener('loadeddata', hide);
+    if (v.readyState >= 2) hide();
+    v.style.cursor = 'pointer';
+    v.addEventListener('click', (e) => { e.stopPropagation(); v.paused ? v.play() : v.pause(); });
+  });
+
+  const slides = [...document.querySelectorAll('.slide')];
+  function go(dir){
+    const y = scrollY + innerHeight/2;
+    let idx = slides.findIndex(s => s.offsetTop <= y && s.offsetTop + s.offsetHeight > y);
+    if (idx < 0) idx = 0;
+    const t = slides[Math.max(0, Math.min(slides.length-1, idx+dir))];
+    t && t.scrollIntoView({behavior:'smooth'});
+  }
+  addEventListener('keydown', (e) => {
+    if (['ArrowDown','ArrowRight','PageDown',' '].includes(e.key)) { e.preventDefault(); go(1); }
+    else if (['ArrowUp','ArrowLeft','PageUp'].includes(e.key)) { e.preventDefault(); go(-1); }
+    else if (e.key === 'Home') { e.preventDefault(); slides[0].scrollIntoView({behavior:'smooth'}); }
+    else if (e.key === 'End') { e.preventDefault(); slides.at(-1).scrollIntoView({behavior:'smooth'}); }
+  });
+</script>
+</body>
+</html>
