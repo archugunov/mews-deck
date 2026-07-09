@@ -42,6 +42,11 @@
   li{position:relative;padding-left:1.6rem;font-size:var(--fs-body);line-height:1.5;color:var(--muted);font-weight:400;}
   li::before{content:"";position:absolute;left:0;top:.62em;width:.42rem;height:.42rem;border-radius:50%;background:var(--pink);}
   li.dim::before{background:var(--faint);}
+  /* Slide-5 numbered action list — number is the only marker (no global dot) */
+  .steplist{list-style:none;margin:.5rem 0 0;padding:0;display:flex;flex-direction:column;gap:clamp(.7rem,1.7vh,1.1rem);}
+  .steplist li{position:static;padding-left:0;display:flex;gap:.7rem;align-items:baseline;font-size:clamp(.92rem,1.2vw,1.18rem);color:var(--text);font-weight:600;line-height:1.32;}
+  .steplist li::before{display:none;}
+  .steplist .n{flex:none;color:var(--pink);font-weight:800;font-variant-numeric:tabular-nums;min-width:1.1ch;}
   li strong{color:var(--text);}
   .label{font-size:var(--fs-eyebrow);font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:var(--gap-item);}
   .group + .group{margin-top:clamp(1.4rem,3vh,2.2rem);}
@@ -345,10 +350,10 @@
       </div>
       <div class="evalcard anim" style="--i:3;display:flex;flex-direction:column;justify-content:center">
         <div class="ct" style="color:var(--pink)">Cheapest test first</div>
-        <ol style="margin:.4rem 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:clamp(.8rem,1.8vh,1.25rem)">
-          <li style="display:flex;gap:.85rem;align-items:baseline;font-size:clamp(1.15rem,1.7vw,1.55rem);color:var(--text);font-weight:600;line-height:1.32"><span class="pink" style="font-weight:800;flex:none">1</span><span>Read the config — count dark upsells across real properties.</span></li>
-          <li style="display:flex;gap:.85rem;align-items:baseline;font-size:clamp(1.15rem,1.7vw,1.55rem);color:var(--text);font-weight:600;line-height:1.32"><span class="pink" style="font-weight:800;flex:none">2</span><span>Interview a few GMs/RMs — confirm the pain is real.</span></li>
-          <li style="display:flex;gap:.85rem;align-items:baseline;font-size:clamp(1.15rem,1.7vw,1.55rem);color:var(--text);font-weight:600;line-height:1.32"><span class="pink" style="font-weight:800;flex:none">3</span><span>Build only if the upside <span class="pink">beats other bets</span>.</span></li>
+        <ol class="steplist">
+          <li><span class="n">1</span><span>Read the config — count dark upsells across real properties.</span></li>
+          <li><span class="n">2</span><span>Interview a few GMs/RMs — confirm the pain is real.</span></li>
+          <li><span class="n">3</span><span>Build only if the upside <span class="pink">beats other bets</span>.</span></li>
         </ol>
       </div>
     </div>
