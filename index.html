@@ -429,7 +429,7 @@
         </div>
         <div class="anim" style="--i:10">
           <div class="pr-k">Every AI output is checked in code</div>
-          <p class="pr-d">Three deterministic checks: <strong>grounding</strong> rejects any number not in the data; <strong>claim-check</strong> catches a false claim about a real one; a <strong>gold-set</strong> fails the build if the classifier buries a real upsell.</p>
+          <p class="pr-d"><strong>Two runtime gates</strong> on the explanation — <strong>grounding</strong> rejects any number not in the data, <strong>claim-check</strong> catches a false claim about a real one. Plus <strong>one offline eval</strong> that fails the build if the classifier buries a real upsell.</p>
         </div>
       </div>
     </div>
@@ -451,9 +451,9 @@
         <div class="label">Production readiness</div>
         <ul>
           <li><strong>Handles messy real data</strong> — multiple currencies, price outliers, paginated orders.</li>
-          <li><strong>Runs continuously</strong> — a scheduled batch re-scans every property, catching upsells that go dark over time.</li>
+          <li><strong>Re-scans on a schedule</strong> — config drifts dark over time (staff churn, resets), so it keeps catching new gaps — not a one-time audit.</li>
           <li><strong>Role-aware</strong> — only the GM/Revenue Manager can enable; other staff see it read-only.</li>
-          <li><strong>A layer of online evals</strong> — acceptance and dismiss rates.</li>
+          <li><strong>Online behavioural layer</strong> — acceptance and reversal rates on live traffic, instrumented in prod.</li>
         </ul>
       </div>
     </div>
@@ -468,8 +468,8 @@
         <ul class="metric-list">
           <li class="anim" style="--i:2"><span class="ml-k">Objective</span><span class="ml-v">More upsell revenue per property — expansion inside the installed base</span></li>
           <li class="hero anim" style="--i:3"><span class="ml-k">North Star</span><span class="ml-v">% of properties with <strong>revenue-generating</strong> upsells</span></li>
-          <li class="anim" style="--i:4"><span class="ml-k">Leading</span><span class="ml-v">14-day activation rate · nudge acceptance</span></li>
-          <li class="anim" style="--i:5"><span class="ml-k">Feature guardrails</span><span class="ml-v">dismiss rate · reversal rate · double-sell rate</span></li>
+          <li class="anim" style="--i:4"><span class="ml-k">Leading</span><span class="ml-v">Opportunities-tab opens · opportunity clicks · activation rate (last 14d)</span></li>
+          <li class="anim" style="--i:5"><span class="ml-k">Feature guardrails</span><span class="ml-v">dismiss rate · reversal rate · double-charge rate</span></li>
           <li class="anim" style="--i:6"><span class="ml-k">Product health</span><span class="ml-v">support-ticket spike · engagement/adoption · NRR (directional)</span></li>
         </ul>
       </div>
@@ -503,11 +503,10 @@
       </div>
       <div>
         <div class="label anim" style="--i:2">Improve on data &amp; feedback</div>
-        <p class="mi-lede anim" style="--i:3">The one outcome that would make us pivot — plus two signals we tune on.</p>
+        <p class="mi-lede anim" style="--i:3">The one outcome that would make us pivot — plus the signals we tune on.</p>
         <ul>
           <li class="anim" style="--i:4"><strong>Rare in the real base</strong> → re-point the engine at never-set-up upsells &amp; other dormant capabilities.</li>
-          <li class="anim" style="--i:5"><strong>Weak leading indicators</strong> (low activation, low acceptance) → re-rank and tighten relevance.</li>
-          <li class="anim" style="--i:6"><strong>Distrust</strong> (high reversal, high mute) → tighten grounding, price more conservatively.</li>
+          <li class="anim" style="--i:5"><strong>Weak signals</strong> (low activation, high reversal or mute) → re-rank, tighten relevance and grounding, price conservatively.</li>
         </ul>
       </div>
     </div>
