@@ -65,6 +65,8 @@
   .goal-proof .gp-k{display:block;font-size:var(--fs-eyebrow);font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-bottom:.4rem;}
   .goal-proof .gp-v{font-size:var(--fs-body);color:var(--muted);line-height:1.5;}
   .goal-proof .gp-v strong{color:var(--pink);font-weight:700;}
+  .goal .goal-metrics{margin-top:.5rem;gap:clamp(.6rem,1.4vh,.95rem);}
+  .goal .goal-metrics li{font-size:clamp(1.1rem,1.6vw,1.5rem);font-weight:700;color:var(--text);line-height:1.25;}
 
   /* lessons (Slide 7 two-column) */
   .lesson{display:flex;flex-direction:column;gap:clamp(.7rem,1.5vh,1.1rem);}
@@ -285,21 +287,22 @@
   <section class="slide">
     <div class="inner split">
       <div>
-        <div class="eyebrow anim" style="--i:0">Why this problem</div>
-        <h2 class="anim" style="--i:1">Mews wins when the hotel wins</h2>
+        <div class="eyebrow anim" style="--i:0">Problem</div>
+        <h2 class="anim" style="--i:1">Helping hotels earn from dormant upsells</h2>
         <ul>
-          <li class="anim" style="--i:2"><strong>The dark upsell</strong> — "Breakfast — €15" is set up and sells at the desk, but it stays dark in self-serve — so it never reaches guests who check in online or at the kiosk.</li>
-          <li class="anim" style="--i:3"><strong>Why now</strong> — margins are tight (labour cost per occupied room up ~13%), OTAs take most of an independent's bookings, and Cloudbeds already ships an "Opportunities" tab.</li>
+          <li class="anim" style="--i:2"><strong>What it means</strong> — a configured upsell like "Breakfast — €15" sells at the front desk but stays dark in self-serve, so it never reaches guests who check in online or at the kiosk.</li>
+          <li class="anim" style="--i:3"><strong>Why this problem</strong> — Mews wins when the hotel wins: more upsell revenue per property deepens the installed base and lifts payments, retention and NRR. Provable, too — +70% per check-in once the kiosk is on (Mews's data).</li>
+          <li class="anim" style="--i:4"><strong>Why now</strong> — it's pure PLG: one in-product nudge, no sales motion. Margins are tight (labour up ~13% per occupied room), OTAs eat independents' bookings, and Cloudbeds already ships an "Opportunities" tab.</li>
         </ul>
       </div>
       <div>
-        <div class="goal anim" style="--i:2">
-          <span class="goal-k">The goal</span>
-          <span class="goal-v">Grow upsell revenue per property — installed-base expansion that lifts Mews's retention, NRR, and payments volume.</span>
-        </div>
-        <div class="goal-proof anim" style="--i:3">
-          <span class="gp-k">Evidence signal</span>
-          <p class="gp-v"><strong>+70%</strong> more upsell revenue per check-in once the kiosk is on (Mews's own data).</p>
+        <div class="goal anim" style="--i:3">
+          <span class="goal-k">Success metrics</span>
+          <ul class="goal-metrics">
+            <li>Upsell revenue per property</li>
+            <li>NRR</li>
+            <li>Retention</li>
+          </ul>
         </div>
       </div>
     </div>
